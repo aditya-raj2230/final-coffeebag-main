@@ -96,22 +96,20 @@ export default function InkfishScroll() {
 
     // Add horizontal scroll handling
     const handleHorizontalScroll = (e) => {
-      // Only respond to horizontal scrolling (deltaX)
-      if (!e.deltaX) return;
-      
       e.preventDefault();
+      const delta = e.deltaY || e.deltaX;
       const maxScroll = dragTrack.offsetWidth - dragHandle.current.offsetWidth;
       
       // Update drag handle position
       const currentX = gsap.getProperty(dragHandle.current, "x");
-      const newX = Math.max(0, Math.min(maxScroll, currentX + e.deltaX * 0.5));
+      const newX = Math.max(0, Math.min(maxScroll, currentX + delta * 0.2));
       
       // Update both drag handle and content position
-      gsap.to(dragHandle.current, { x: newX, duration: 0.3 });
+      gsap.to(dragHandle.current, { x: newX, duration: 0.5 });
       
       const progress = newX / maxScroll;
       const moveX = -(totalWidth - sectionWidth) * progress;
-      gsap.to(container, { x: moveX, duration: 0.3 });
+      gsap.to(container, { x: moveX, duration: 0.5 });
     };
 
     // Add wheel event listener
@@ -185,9 +183,7 @@ export default function InkfishScroll() {
       </div>
 
       <div
-        className={`drag-track fixed bottom-8 left-1/2 -translate-x-1/2 w-[200px] h-[40px] bg-gray-700 rounded-full transition-opacity duration-300 ${
-          isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`drag-track fixed bottom-8 left-1/2 -translate-x-1/2 w-[200px] h-[40px] bg-gray-700 rounded-full transition-opacity duration-300 opacity-0`}
         style={{
           backgroundColor: '#333',
         }}
@@ -196,7 +192,7 @@ export default function InkfishScroll() {
           ref={dragHandle}
           className="absolute left-0 w-[100px] h-[40px] bg-gray-900 text-white font-bold rounded-full cursor-grab flex items-center justify-center shadow-md"
           style={{
-            transform: 'translateX(0)', // Force initial position
+            transform: 'translateX(0)',
           }}
         >
           <p>Drag</p>
