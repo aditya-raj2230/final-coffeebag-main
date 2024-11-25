@@ -304,7 +304,7 @@ const OurCoffees = () => {
       </div>
 
       {/* InkfishScroll at bottom */}
-      <div className="w-full h-[120vh]">
+      <div className="w-full h-[100vh]">
         <InkfishScroll />
       </div>
     </div>
