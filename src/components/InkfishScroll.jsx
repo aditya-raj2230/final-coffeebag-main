@@ -94,6 +94,29 @@ export default function InkfishScroll() {
       observer.observe(contentContainer.current);
     }
 
+    // Add horizontal scroll handling
+    const handleHorizontalScroll = (e) => {
+      // Only respond to horizontal scrolling (deltaX)
+      if (!e.deltaX) return;
+      
+      e.preventDefault();
+      const maxScroll = dragTrack.offsetWidth - dragHandle.current.offsetWidth;
+      
+      // Update drag handle position
+      const currentX = gsap.getProperty(dragHandle.current, "x");
+      const newX = Math.max(0, Math.min(maxScroll, currentX + e.deltaX * 0.5));
+      
+      // Update both drag handle and content position
+      gsap.to(dragHandle.current, { x: newX, duration: 0.3 });
+      
+      const progress = newX / maxScroll;
+      const moveX = -(totalWidth - sectionWidth) * progress;
+      gsap.to(container, { x: moveX, duration: 0.3 });
+    };
+
+    // Add wheel event listener
+    mainContainer.current.addEventListener('wheel', handleHorizontalScroll, { passive: false });
+
     return () => {
       // Add scroll cleanup
       window.removeEventListener('scroll', handleScroll);
@@ -101,6 +124,7 @@ export default function InkfishScroll() {
       gsap.set(container, { clearProps: 'all' });
       gsap.set(dragHandle.current, { clearProps: 'all' });
       observer.disconnect();
+      mainContainer.current.removeEventListener('wheel', handleHorizontalScroll);
     };
   }, []);
 
